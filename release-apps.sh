@@ -45,3 +45,5 @@ git add example/ios/RNHMSExample/Info.plist
 git add example/ios/RNHMSExample.xcodeproj/project.pbxproj
 
 git commit -m "released sample app version $versionCode ($buildNumber) ⚛️" --no-verify
+
+git push --verbose
