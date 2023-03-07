@@ -123,6 +123,9 @@ export class HMSSDK {
     appGroup?: String;
     preferredExtension?: String;
     logSettings?: HMSLogSettings;
+    totalEventsLimit?: number,
+    coolDownMillis?: number,
+    eventsIntervalMillis?: number,
   }) {
     const { version } = require('../../package.json');
     const { major, minor, patch } = ReactNativeVersion.version;
@@ -135,6 +138,9 @@ export class HMSSDK {
         sdkVersion: version,
       },
       logSettings: params?.logSettings,
+      totalEventsLimit: params?.totalEventsLimit,
+      coolDownMillis: params?.coolDownMillis,
+      eventsIntervalMillis: params?.eventsIntervalMillis,
     });
     HmsSdk = new HMSSDK(id);
     return HmsSdk;

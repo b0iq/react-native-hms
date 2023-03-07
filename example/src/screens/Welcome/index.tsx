@@ -541,6 +541,9 @@ const Welcome = () => {
       trackSettings,
       appGroup: 'group.reactnativehms',
       preferredExtension: 'live.100ms.reactnative.RNHMSExampleBroadcastUpload',
+      totalEventsLimit: 50,
+      coolDownMillis: 4000,
+      eventsIntervalMillis: 15,
     });
     const logger = new HMSLogger();
     logger.updateLogLevel(HMSLogLevel.VERBOSE, true);

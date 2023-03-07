@@ -53,9 +53,24 @@ class HMSManager(reactContext: ReactApplicationContext) :
       callback?.resolve(randomUUIDString)
     }
 
+    val totalEventsLimit: Int = data?.getInt("totalEventsLimit") ?: 100
+    val coolDownMillis: Long = data?.getInt("coolDownMillis")?.toLong() ?: 1000
+    val eventsIntervalMillis: Long = data?.getInt("eventsIntervalMillis")?.toLong() ?: 15
+
     // setup HMSEventDelayer class
+    HMSEventDelayer.setEmitterFunction(object: HMSEventDelayerSetup {
     // which function should `HMSEventDelayer` class call to emit event
-    HMSEventDelayer.setEmitterFunction { event, data -> this.emit(event, data) }
+      override val onEventEmit: (event: String, data: WritableMap) -> Unit
+        get() = { event, data ->  this@HMSManager.emit(event, data) }
+      // How many events can be emitted before cool down
+      override val totalEventsLimit: Int
+        get() = totalEventsLimit
+      // How much duration in milliseconds will cool down take
+      override val coolDownMillis: Long
+        get() = coolDownMillis
+      override val eventsIntervalMillis: Long
+        get() = eventsIntervalMillis
+    })
   }
 
   @ReactMethod
