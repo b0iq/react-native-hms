@@ -79,7 +79,7 @@ class HMSRNSDK(
     val hmsError = HMSException(6002, message, message, message, message, null, false)
     data.putString("id", id)
     data.putMap("error", HMSDecoder.getError(hmsError))
-    delegate.emitEvent("ON_ERROR", data)
+    delegate.emitEvent("ON_ERROR", data) // TODO: (DOUBT) Should error events be emitted without delay?
   }
 
   private fun emitRequiredKeysError(message: String) {
@@ -99,7 +99,7 @@ class HMSRNSDK(
       )
     data.putString("id", id)
     data.putMap("error", HMSDecoder.getError(hmsError))
-    delegate.emitEvent("ON_ERROR", data)
+    delegate.emitEvent("ON_ERROR", data) // TODO: (DOUBT) Should error events be emitted without delay?
   }
 
   private fun rejectCallback(callback: Promise?, message: String) {
@@ -113,7 +113,7 @@ class HMSRNSDK(
     val data: WritableMap = Arguments.createMap()
     data.putString("id", id)
     data.putMap("error", HMSDecoder.getError(error))
-    delegate.emitEvent("ON_ERROR", data)
+    delegate.emitEvent("ON_ERROR", data) // TODO: (DOUBT) Should error events be emitted without delay?
   }
 
   fun emitHMSSuccess(message: HMSMessage? = null): ReadableMap {
@@ -176,7 +176,11 @@ class HMSRNSDK(
             data.putMap("peer", hmsPeer)
             data.putString("type", updateType)
             data.putString("id", id)
-            delegate.emitEvent("ON_PEER_UPDATE", data)
+            if (peer.isLocal) {
+              delegate.emitEventWithoutDelayer("ON_PEER_UPDATE", data)
+            } else {
+              delegate.emitEvent("ON_PEER_UPDATE", data)
+            }
           }
 
           override fun onRoomUpdate(type: HMSRoomUpdate, hmsRoom: HMSRoom) {
@@ -270,7 +274,7 @@ class HMSRNSDK(
                 data.putString("reason", reason)
                 data.putString("id", id)
 
-                delegate.emitEvent("ON_REMOVED_FROM_ROOM", data)
+                delegate.emitEventWithoutDelayer("ON_REMOVED_FROM_ROOM", data)
               }
 
               override fun onError(error: HMSException) {
@@ -320,7 +324,12 @@ class HMSRNSDK(
                 data.putMap("peer", hmsPeer)
                 data.putString("type", updateType)
                 data.putString("id", id)
-                delegate.emitEvent("ON_PEER_UPDATE", data)
+
+                if (peer.isLocal) {
+                  delegate.emitEventWithoutDelayer("ON_PEER_UPDATE", data)
+                } else {
+                  delegate.emitEvent("ON_PEER_UPDATE", data)
+                }
               }
 
               override fun onRoomUpdate(type: HMSRoomUpdate, hmsRoom: HMSRoom) {
@@ -356,7 +365,11 @@ class HMSRNSDK(
                 data.putMap("track", hmsTrack)
                 data.putString("type", updateType)
                 data.putString("id", id)
-                delegate.emitEvent("ON_TRACK_UPDATE", data)
+                if (peer.isLocal) {
+                  delegate.emitEventWithoutDelayer("ON_TRACK_UPDATE", data)
+                } else {
+                  delegate.emitEvent("ON_TRACK_UPDATE", data)
+                }
               }
 
               override fun onMessageReceived(message: HMSMessage) {
@@ -383,7 +396,7 @@ class HMSRNSDK(
                 val data: WritableMap = Arguments.createMap()
                 data.putString("event", "RECONNECTED")
                 data.putString("id", id)
-                delegate.emitEvent("RECONNECTED", data)
+                delegate.emitEvent("RECONNECTED", data) // TODO: (DOUBT) Should connection related events be emitted without delay?
               }
 
               override fun onReconnecting(error: HMSException) {
@@ -395,7 +408,7 @@ class HMSRNSDK(
                 data.putMap("error", HMSDecoder.getError(error))
                 data.putString("event", "RECONNECTING")
                 data.putString("id", id)
-                delegate.emitEvent("RECONNECTING", data)
+                delegate.emitEvent("RECONNECTING", data) // TODO: (DOUBT) Should connection related events be emitted without delay?
               }
 
               override fun onRoleChangeRequest(request: HMSRoleChangeRequest) {
@@ -433,7 +446,7 @@ class HMSRNSDK(
               }
               data.putArray("speakers", peers)
               data.putString("id", id)
-              delegate.emitEvent("ON_SPEAKER", data)
+              delegate.emitEvent("ON_SPEAKER", data) // TODO: (DOUBT) Should speaker events be emitted without delay?
             }
           }
         )
@@ -460,7 +473,7 @@ class HMSRNSDK(
               data.putMap("track", track)
               data.putMap("peer", peer)
               data.putString("id", id)
-              delegate.emitEvent("ON_LOCAL_AUDIO_STATS", data)
+              delegate.emitEvent("ON_LOCAL_AUDIO_STATS", data) // TODO: (DOUBT) Should stats events be emitted without delay?
             }
 
             override fun onLocalVideoStats(
@@ -484,7 +497,7 @@ class HMSRNSDK(
               data.putMap("track", track)
               data.putMap("peer", peer)
               data.putString("id", id)
-              delegate.emitEvent("ON_LOCAL_VIDEO_STATS", data)
+              delegate.emitEvent("ON_LOCAL_VIDEO_STATS", data) // TODO: (DOUBT) Should stats events be emitted without delay?
             }
 
             override fun onRTCStats(rtcStats: HMSRTCStatsReport) {
@@ -503,7 +516,7 @@ class HMSRNSDK(
               data.putMap("audio", audio)
               data.putMap("combined", combined)
               data.putString("id", id)
-              delegate.emitEvent("ON_RTC_STATS", data)
+              delegate.emitEvent("ON_RTC_STATS", data) // TODO: (DOUBT) Should stats events be emitted without delay?
             }
 
             override fun onRemoteAudioStats(
@@ -527,7 +540,7 @@ class HMSRNSDK(
               data.putMap("track", track)
               data.putMap("peer", peer)
               data.putString("id", id)
-              delegate.emitEvent("ON_REMOTE_AUDIO_STATS", data)
+              delegate.emitEvent("ON_REMOTE_AUDIO_STATS", data) // TODO: (DOUBT) Should stats events be emitted without delay?
             }
 
             override fun onRemoteVideoStats(
@@ -551,7 +564,7 @@ class HMSRNSDK(
               data.putMap("track", track)
               data.putMap("peer", peer)
               data.putString("id", id)
-              delegate.emitEvent("ON_REMOTE_VIDEO_STATS", data)
+              delegate.emitEvent("ON_REMOTE_VIDEO_STATS", data) // TODO: (DOUBT) Should stats events be emitted without delay?
             }
           }
         )
@@ -606,7 +619,7 @@ class HMSRNSDK(
               }
               val map: WritableMap = Arguments.createMap()
               map.putString("id", id)
-              delegate.emitEvent("ON_PIP_ROOM_LEAVE", map)
+              delegate.emitEventWithoutDelayer("ON_PIP_ROOM_LEAVE", map)
             } else {
               callback?.resolve(emitHMSSuccess())
             }
@@ -1440,7 +1453,7 @@ class HMSRNSDK(
           data.putString("device", device?.name)
           data.putArray("audioDevicesList", HMSHelper.getAudioDevicesSet(audioDevicesList))
           data.putString("id", id)
-          delegate.emitEvent("ON_AUDIO_DEVICE_CHANGED", data)
+          delegate.emitEventWithoutDelayer("ON_AUDIO_DEVICE_CHANGED", data)
         }
 
         override fun onError(error: HMSException) {

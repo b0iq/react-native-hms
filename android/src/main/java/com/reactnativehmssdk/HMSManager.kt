@@ -888,6 +888,10 @@ class HMSManager(reactContext: ReactApplicationContext) :
       .emit(event, data)
   }
 
+  fun emitEventWithoutDelayer(event: String, data: WritableMap) {
+    emit(event, data)
+  }
+
   fun emitEvent(event: String, data: WritableMap) {
     HMSEventDelayer.emitWithDelay(event, data)
   }
