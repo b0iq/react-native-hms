@@ -255,6 +255,7 @@ class HMSRNSDK(
                 super.onRemovedFromRoom(notification)
 
                 HMSDecoder.clearRestrictDataStates()
+                delegate.cleanup()
                 if (eventsEnableStatus["ON_REMOVED_FROM_ROOM"] != true) {
                   return
                 }
@@ -596,6 +597,7 @@ class HMSRNSDK(
             networkQualityUpdatesAttached = false
             rtcStatsAttached = false
             HMSDecoder.clearRestrictDataStates()
+            delegate.cleanup()
             if (fromPIP) {
               context.currentActivity?.moveTaskToBack(false)
 

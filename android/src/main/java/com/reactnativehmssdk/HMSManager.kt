@@ -892,6 +892,10 @@ class HMSManager(reactContext: ReactApplicationContext) :
     HMSEventDelayer.emitWithDelay(event, data)
   }
 
+  fun cleanup() {
+    HMSEventDelayer.cleanup()
+  }
+
   override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
 
   override fun onActivityStarted(activity: Activity) {}

@@ -34,13 +34,13 @@ object HMSEventDelayer {
 
       if (remainingEvents > 0) {
         // pop item from queue
-      val eventData = dequeue()
+        val eventData = dequeue()
 
         // if item is not valid
         if (eventData === null) {
           // we can emit events as they come
-//          coolDownPeriodStarted = false
-      }
+          // coolDownPeriodStarted = false
+        }
         // if item is valid
         else {
           // emit event
@@ -51,13 +51,13 @@ object HMSEventDelayer {
             // if data queue is empty, we don't have data to emit events
             if (dataQueue.isEmpty()) {
               // emit events as they come
-//              coolDownPeriodStarted = false
-    }
+              // coolDownPeriodStarted = false
+            }
             // if data queue is not empty, emit next event after x-ms
             else {
               // Step A
               coolDownHandler.postDelayed(this, eventsIntervalMillis)
-  }
+            }
           }
           // remaining limit is now exhausted
           // we have to wait minimum 100ms before emitting next set of events
@@ -65,7 +65,7 @@ object HMSEventDelayer {
             // if data queue is empty, we don't have to set timer right now
             if (dataQueue.isEmpty()) {
               // wait for event to come and take step based on when it comes
-//              coolDownPeriodStarted = false
+              // coolDownPeriodStarted = false
             }
             // if data queue is not empty, we have to set timer right now
             else {
@@ -83,7 +83,7 @@ object HMSEventDelayer {
         // if data queue is empty, we don't have to set timer right now
         if (dataQueue.isEmpty()) {
           // wait for event to come and take step based on when it comes
-//          coolDownPeriodStarted = false
+          // coolDownPeriodStarted = false
         }
         // if data queue is not empty, we have to set timer right now
         else {
@@ -109,8 +109,12 @@ object HMSEventDelayer {
   }
 
   // TODO: `cleanup` function can be used to when user leaves room or removed from room
-  private fun cleanup() {
+  fun cleanup() {
     coolDownHandler.removeCallbacks(coolDownCompleteRunnable)
+    lastEventEmittedAt = System.currentTimeMillis()
+    dataQueue.clear()
+    remainingEvents = totalEventsLimit
+    coolDownPeriodStarted = false
   }
 
   private fun emit(event: String, data: WritableMap) {
